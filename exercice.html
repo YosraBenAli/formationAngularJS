@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- AngularJS -->
+    <script src="assets/js/angular.min.js"></script>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Exercice about AngularJS First Tuto 17/10/2017</title>
+
+    <!-- BootstrapCSS -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+
+    <!--FontAwesomeCSS-->
+    <link rel="stylesheet" href="assets/font-awesome/css/font-awesome.min.css">
+</head>
+<body ng-app="myApp">
+
+    <div class="container" style="padding-top: 60px;">
+        <div ng-controller="myCtrl">
+            <h2>$scope having an array of 3 objects</h2>
+            <br>
+            <form class="form-inline text-center" ng-repeat="item in companies">
+                <input type="text" class="form-control" style="width:350px;" ng-model="item.name">
+                <input type="text" class="form-control" style="width:350px;" ng-model="item.country">
+                <input type="text" class="form-control" style="width:350px;" ng-model="item.ceo">
+                <br><br>
+            </form>
+
+            <br><br>
+
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Company Name</th>
+                    <th>Country</th>
+                    <th>C.E.O</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="item in companies">
+                    <td>{{item.name}}</td>
+                    <td>{{item.country}}</td>
+                    <td>{{item.ceo}}</td>
+                    <td><button class="btn btn-primary" ng-click="item.details()">More Details</button></td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+
+    <script>
+        var app = angular.module('myApp',[]);
+        app.controller('myCtrl', function($scope){
+            $scope.companies = [
+                {name : 'Microsoft', country : 'USA', ceo : 'Satya Nadella', details : function(){alert (this.name + "'s headquarters is in " + this.country + '. Its C.E.O is ' + this.ceo);}},
+                {name : 'Samsung', country : 'South Korea', ceo : 'Yoon Boo Keun', details : function(){alert (this.name + "'s headquarters is in " + this.country + '. Its C.E.O is ' + this.ceo);}},
+                {name : 'Apple', country : 'USA',  ceo : 'Tim Cook', details : function(){alert (this.name + "'s headquarters is in " + this.country + '. Its C.E.O is ' + this.ceo);}}
+            ];
+        });
+    </script>
+
+    <!-- jQuery -->
+    <script src="js/jquery-3.2.1.min.js"></script>
+
+    <!-- BootstrapJS -->
+    <script src="js/bootstrap.min.js"></script>
+</body>
+</html>

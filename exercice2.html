@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- AngularJS -->
+    <script src="assets/js/angular.min.js"></script>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Exercice about AngularJS Second Tuto 18/10/2017</title>
+
+    <!-- BootstrapCSS -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+
+    <!--FontAwesomeCSS-->
+    <link rel="stylesheet" href="assets/font-awesome/css/font-awesome.min.css">
+</head>
+
+<body ng-app="myApp">
+<div class="container" style="padding-top: 60px; padding-bottom: 60px ">
+
+
+    <h2>AngularJS Services : $http.get() :</h2>
+    <br>
+    <div ng-controller="myController">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Référence</th>
+                <th>Libellé</th>
+                <th>Etat de vente</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="item in produits">
+                <td>{{item.reference}}</td>
+                <td>{{item.libelle}}</td>
+                <td>{{item.etatVente}}</td>
+            </tr>
+            </tbody>
+        </table>
+        <br>
+
+        <h2>AngularJS Services : $http.post() :</h2>
+        <br>
+        <form class="form-horizontal">
+            <div class="form-group">
+                <label for="inputReference" class="control-label col-xs-2">Référence</label>
+                <div class="col-xs-10">
+                    <input type="text" class="form-control" id="inputReference" placeholder="Référence du produit" ng-model="reference" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="inputLibelle" class="control-label col-xs-2">Libellé</label>
+                <div class="col-xs-10">
+                    <input type="text" class="form-control" id="inputLibelle" placeholder="Libellé du produit" ng-model="libelle" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-xs-offset-2 col-xs-10">
+                    <label class="radio-inline"><input type="radio" name="etatVente" value="0" ng-model="etatVente"> En Vente</label>
+                    <label class="radio-inline"><input type="radio" name="etatVente" value="1" ng-model="etatVente"> Hors Vente</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-xs-offset-2 col-xs-10">
+                    <button type="submit" class="btn btn-primary" ng-click="sendData()">Ajouter Produit</button>
+                </div>
+            </div>
+        </form>
+
+        Ajout effectué : {{data}}
+        <br>
+        Erreur: {{error}}
+    </div>
+
+</div>
+
+<script>
+    var myApp = angular.module('myApp', []);
+
+    myApp.controller("myController", function ($scope, $http) {
+
+        $http.get('http://carla.naxidia.com:8083/api/produits')
+            .then(function(response) {
+            $scope.produits = response.data;
+        }, function(response) {
+            $scope.produits = response.statusText;
+        });
+
+
+        $scope.sendData = function() {
+
+            var newData = {reference: $scope.reference, libelle: $scope.libelle, etatVente: $scope.etatVente};
+            $http.post('http://carla.naxidia.com:8083/api/produits', newData)
+                .then(function(response) {
+                    $scope.data = response.data;
+                },(function(response) {
+                    $scope.error = response.status + ' : ' + response.statusText;
+                }
+                ))
+        }
+    });
+</script>
+<!-- jQuery -->
+<script src="assets/js/jquery-3.2.1.min.js"></script>
+
+<!-- BootstrapJS -->
+<script src="assets/js/bootstrap.min.js"></script>
+</body>
+</html>

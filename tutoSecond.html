@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- AngularJS -->
+    <script src="assets/js/angular.min.js"></script>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>AngularJS Second Tuto 18/10/2017</title>
+
+    <!-- BootstrapCSS -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+
+    <!--FontAwesomeCSS-->
+    <link rel="stylesheet" href="assets/font-awesome/css/font-awesome.min.css">
+</head>
+<body ng-app="myApp">
+    <div class="container" style="padding-top: 60px;">
+        <h1>Second AngularJS Application</h1>
+
+        <div ng-controller="myCtrl">
+
+            <p>Today's welcome message is:</p>
+            <h1>{{myWelcome}}</h1>
+
+        </div>
+
+        <script>
+            var app = angular.module('myApp', []);
+            app.controller('myCtrl', function($scope, $http) {
+                $http({
+                    method : "GET",
+                    url : "testforhttp.html"
+                }).then(function mySuccess(response) {
+                    $scope.myWelcome = response.data;
+                }, function myError(response) {
+                    $scope.myWelcome = response.statusText;
+                });
+            });
+        </script>
+
+    </div>
+    <!-- jQuery -->
+    <script src="js/jquery-3.2.1.min.js"></script>
+
+    <!-- BootstrapJS -->
+    <script src="js/bootstrap.min.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- AngularJS -->
+    <script src="assets/js/angular.min.js"></script>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>AngularJS First Tuto 17/10/2017</title>
+
+    <!-- BootstrapCSS -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+
+    <!--FontAwesomeCSS-->
+    <link rel="stylesheet" href="assets/font-awesome/css/font-awesome.min.css">
+</head>
+<body ng-app="myApp">
+    <div class="container" style="padding-top: 60px;">
+        <h1>First AngularJS Application</h1>
+        <div ng-init="number1=0;number2=0;person = {firstName:'John', lastName:'Doe'}">
+            <form class="form-inline">
+                Enter 2 numbers to multiply :
+                <input type="text" class="form-control" style="width:300px;" ng-model="number1"> x
+                <input type="text" class="form-control" style="width:300px;" ng-model="number2"> =
+                {{number1 * number2}} (with expression)
+                **** <span ng-bind="number1 * number2"></span> (with ng-bind)
+            </form>
+            <br>
+            The name is {{person.firstName + " " + person.lastName}}
+        </div>
+
+        <h3>ng-repeat</h3>
+        <div ng-init="students = ['John', 'Sam', 'Mary']">
+            <ul>
+                <li ng-repeat="name in students">
+                    {{name}}
+                </li>
+            </ul>
+        </div>
+
+        <h3>AngularJS Controller</h3>
+        <div ng-controller="myCtrl">
+            <form class="form-inline">
+                <input type="text" class="form-control" style="width:300px;" ng-model="firstName">
+                <input type="text" class="form-control" style="width:300px;" ng-model="lastName">
+                <button class="btn btn-primary" ng-click="fullName(firstName,lastName)">Full Name</button>
+            </form>
+            <h4>$scope : attached object student with method fullInfo</h4>
+            <form class="form-inline">
+                <input type="text" class="form-control" style="width:300px;" ng-model="student.fn">
+                <input type="text" class="form-control" style="width:300px;" ng-model="student.ln">
+                <button class="btn btn-primary" ng-click="student.fullInfo()">Full Info</button>
+                <span id="demo"></span>
+
+            </form>
+        </div>
+
+    </div>
+
+    <script>
+        var app = angular.module('myApp',[]);
+        app.controller('myCtrl', function ($scope){
+            $scope.firstName = 'Jack';
+            $scope.lastName = 'Nickelson';
+            $scope.fullName = function(x,y){
+                alert('The name is ' + x + ' ' + y);
+            }
+            $scope.student = {fn : 'Brad', ln : 'Wilson' , fullInfo : function() {
+                document.getElementById("demo").innerHTML = 'First name is : ' + $scope.student.fn + ' and last name is ' + $scope.student.ln;
+            }
+            };
+        });
+    </script>
+
+    <!-- jQuery -->
+    <script src="js/jquery-3.2.1.min.js"></script>
+
+    <!-- BootstrapJS -->
+    <script src="js/bootstrap.min.js"></script>
+
+</body>
+</html>
