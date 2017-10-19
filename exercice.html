@@ -22,14 +22,6 @@
         <div ng-controller="myCtrl">
             <h2>$scope having an array of 3 objects</h2>
             <br>
-            <form class="form-inline text-center" ng-repeat="item in companies">
-                <input type="text" class="form-control" style="width:350px;" ng-model="item.name">
-                <input type="text" class="form-control" style="width:350px;" ng-model="item.country">
-                <input type="text" class="form-control" style="width:350px;" ng-model="item.ceo">
-                <br><br>
-            </form>
-
-            <br><br>
 
             <table class="table table-striped">
                 <thead>
@@ -49,6 +41,27 @@
                 </tr>
                 </tbody>
             </table>
+            <br><br>
+            Do you want to modify something ?
+            <input type="radio" ng-model="checkedYes" name="modify" value=1 id="radio1"> Yes
+            <input type="radio" ng-model="checkedNo" name="modify" value=0 id="radio2"> No
+
+            <div ng-if="checkedYes">
+                <br>
+                <div id="form1">
+                    <form class="form-inline text-center" ng-repeat="item in companies">
+                        <input type="text" class="form-control" style="width:350px;" ng-model="item.name">
+                        <input type="text" class="form-control" style="width:350px;" ng-model="item.country">
+                        <input type="text" class="form-control" style="width:350px;" ng-model="item.ceo">
+                        <br><br>
+                    </form>
+                </div>
+
+            </div>
+
+            <div ng-show="checkedNo">
+                <h1>We're good to go</h1>
+            </div>
 
         </div>
     </div>
@@ -66,9 +79,22 @@
     </script>
 
     <!-- jQuery -->
-    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="assets/js/jquery-3.2.1.min.js"></script>
 
     <!-- BootstrapJS -->
-    <script src="js/bootstrap.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+
+    <script>
+        /*
+        $(document).ready(
+            function(){
+                $('#radio2').click(function () {
+                        $('#form1').hide('slow');
+                });
+            });
+         */
+    </script>
+
+
 </body>
 </html>

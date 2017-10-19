@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- AngularJS -->
+    <script src="assets/js/angular.min.js"></script>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Exercice about Simple CRUD in AngularJS 19/10/2017</title>
+
+    <!-- BootstrapCSS -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+
+    <!-- FontAwesomeCSS -->
+    <link rel="stylesheet" href="assets/font-awesome/css/font-awesome.min.css">
+</head>
+<body ng-app="myApp">
+
+    <div class="container" style="padding-top: 60px; padding-bottom: 60px">
+        <div ng-controller="myController">
+            <h1>Simple CRUD Operations</h1>
+            <!-- Affichage des 3 éléments initialisés dans l'objet $scope -->
+            <table class="table table-striped table-responsive">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Adress</th>
+                    <th>Phone Number</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="x in customers">
+                    <td>{{x.id}}</td>
+                    <td>{{x.firstName}}</td>
+                    <td>{{x.lastName}}</td>
+                    <td>{{x.adress}}</td>
+                    <td>{{x.phone}}</td>
+                    <!-- Cette colonne contient l'ensemble des opérations pour chaque élément -->
+                    <td>
+                        <div class="dropdown">
+                        <button data-toggle="dropdown" class="dropdown-toggle btn btn-primary">Operations <span class="caret"></span></button>
+                        <ul class="dropdown-menu">
+                            <!-- Le clic sur le lien Update appelle la fonction selectCustomer() (non pas la fonction updateCustomer()) qui récupère les données de l'élément correspondant
+                             et les relie aux inputs se trouvant dans le modal #myModal -->
+                            <li><a href="#myModal" ng-click="selectCustomer(x)" data-toggle="modal">Update<span class="fa fa-refresh pull-right"></span></a></li>
+                            <li class="divider"></li>
+                            <!-- Appel à la fonction deleteCustomer pour l'élément x -->
+                            <li><a ng-click="deleteCustomer(x)">Delete<span class="fa fa-trash pull-right"></span></a></li>
+                        </ul>
+                    </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <br>
+            <!-- Ce lien fait apparaître et disparaître (toggle) le formulaire d'ajout -->
+            <a class="btn btn-success" id="button1"><span class="fa fa-user-plus"></span> Add new customer</a>
+
+            <div id="form1" hidden="true">
+                <br>
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="inputFirstName" class="control-label col-xs-2">First Name</label>
+                        <div class="col-xs-10">
+                            <input type="text" class="form-control" id="inputFirstName" placeholder="Please enter your first name" ng-model="customers.firstName">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputLastName" class="control-label col-xs-2">Last Name</label>
+                        <div class="col-xs-10">
+                            <input type="text" class="form-control" id="inputLastName" placeholder="Please enter your last name" ng-model="customers.lastName">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputAdress" class="control-label col-xs-2">Adress</label>
+                        <div class="col-xs-10">
+                            <input type="text" class="form-control" id="inputAdress" placeholder="Please enter your current adress" ng-model="customers.adress">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputPhone" class="control-label col-xs-2">Phone Number</label>
+                        <div class="col-xs-10">
+                            <input type="text" class="form-control" id="inputPhone" placeholder="Please enter your phone number" ng-model="customers.phone">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-xs-offset-2 col-xs-10">
+                            <!-- Clic sur le bouton Add appelle la fonction addCustomer() de l'objet $scope -->
+                            <button type="submit" class="btn btn-primary" ng-click="addCustomer()">Add</button>
+                            <button type="reset" class="btn btn-default">Reset</button>
+                        </div>
+                    </div>
+                </form>
+            </div> <!-- #form1 -->
+
+            <!-- Modal affichant les données qui vont être mises à jour. Ce modal sera affiché lorsqu'on clique sur Update -->
+            <div id="myModal" class="modal fade">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <!-- Le clic sur le bouton x appelle la fonction clearCache() qui permet d'initialiser la variable customers de l'objet $scope -->
+                            <button type="button" class="close" data-dismiss="modal" ng-click="clearCache()" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title">Update customer's data</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form class="form-horizontal">
+                                <div class="form-group">
+                                    <label for="inputFirstName2" class="control-label col-xs-3">First Name</label>
+                                    <div class="col-xs-9">
+                                        <input type="text" class="form-control" id="inputFirstName2" placeholder="Please enter your first name" ng-model="customers.firstName">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="inputLastName2" class="control-label col-xs-3">Last Name</label>
+                                    <div class="col-xs-9">
+                                        <input type="text" class="form-control" id="inputLastName2" placeholder="Please enter your last name" ng-model="customers.lastName">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="inputAdress2" class="control-label col-xs-3">Adress</label>
+                                    <div class="col-xs-9">
+                                        <input type="text" class="form-control" id="inputAdress2" placeholder="Please enter your current adress" ng-model="customers.adress">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="inputPhone2" class="control-label col-xs-3">Phone Number</label>
+                                    <div class="col-xs-9">
+                                        <input type="text" class="form-control" id="inputPhone2" placeholder="Please enter your phone number" ng-model="customers.phone">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-xs-offset-3 col-xs-9">
+                                        <!-- Le clic sur le bouton Update appelle la fonction updateCustomer() -->
+                                        <button type="submit" class="btn btn-primary" ng-click="updateCustomer()" data-dismiss="modal">Update</button>
+                                        <button type="reset" class="btn btn-default">Reset</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- #myModal -->
+        </div><!-- //ng-controller -->
+    </div><!-- //container -->
+
+
+    <script>
+        var app = angular.module('myApp',[]);
+        app.controller('myController',function($scope){
+            // Afficher tableau customers
+            $scope.customers = [
+                { id : '1', firstName : 'John', lastName : 'Doe', adress : 'New York', phone : '8758-4777-44'},
+                { id : '2', firstName : 'Mary', lastName : 'Peterson', adress : 'Florida', phone : '8788-4787-22'},
+                { id : '3', firstName : 'Peter', lastName : 'Parker', adress : 'Michigan', phone : '8758-4778-33'}
+            ];
+
+            // Ajouter un nouveau élément au tableau customers
+            $scope.addCustomer = function() {
+                var newCustomer = {
+                    id: $scope.customers.length + 1,
+                    firstName: $scope.customers.firstName,
+                    lastName: $scope.customers.lastName,
+                    adress: $scope.customers.adress,
+                    phone: $scope.customers.phone
+                };
+                $scope.customers.push(newCustomer);
+
+                // Initialiser l'objet $scope après l'ajout. (Utile en cas d'ajout de plusieurs éléments successivement)
+                $scope.clearCache();
+            }
+
+            // Supprimer un élément du tableau customers à partir de son index
+            $scope.deleteCustomer = function(selectedCust) {
+                var indexCustomer = $scope.customers.indexOf(selectedCust);
+                $scope.customers.splice(indexCustomer,1);
+            }
+
+            // Sélectionner l'élément qu'on va mettre à jour ses données pour l'afficher dans un formulaire de mise à jour
+            $scope.selectCustomer = function (selectedCust) {
+                $scope.customers.id = selectedCust.id;
+                $scope.customers.firstName = selectedCust.firstName;
+                $scope.customers.lastName = selectedCust.lastName;
+                $scope.customers.adress = selectedCust.adress;
+                $scope.customers.phone = selectedCust.phone;
+
+            }
+
+            // Mettre à jour des données d'un élément du tableau customers, après avoir être récupèrées par la fonction selectCustomer()
+            $scope.updateCustomer = function() {
+                $.grep($scope.customers, function (e) {
+                    if (e.id == $scope.customers.id) {
+                        e.firstName = $scope.customers.firstName;
+                        e.lastName = $scope.customers.lastName;
+                        e.adress = $scope.customers.adress;
+                        e.phone = $scope.customers.phone;
+                    }
+                });
+
+                // Initialiser l'objet $scope après la mise à jour.
+                $scope.clearCache();
+            }
+
+            // Intialiser le tableau customers de l'objet $scope
+            $scope.clearCache = function() {
+                $scope.customers.id = 0;
+                $scope.customers.firstName = '';
+                $scope.customers.lastName = '';
+                $scope.customers.adress = '';
+                $scope.customers.phone = '';
+            }
+        });
+
+    </script>
+    <!-- jQuery -->
+    <script src="assets/js/jquery-3.2.1.min.js"></script>
+
+    <!-- BootstrapJS -->
+    <script src="assets/js/bootstrap.min.js"></script>
+
+    <!-- toggle le formulaire d'ajout -->
+    <script>
+        $(document).ready(
+            function(){
+                $('#button1').click(function () {
+                    $('#form1').toggle('slow');
+                });
+            });
+    </script>
+
+</body>
+</html>

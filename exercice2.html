@@ -27,6 +27,7 @@
         <table class="table table-striped">
             <thead>
             <tr>
+                <th>ID</th>
                 <th>Référence</th>
                 <th>Libellé</th>
                 <th>Etat de vente</th>
@@ -34,6 +35,7 @@
             </thead>
             <tbody>
             <tr ng-repeat="item in produits">
+                <td>{{item.id}}</td>
                 <td>{{item.reference}}</td>
                 <td>{{item.libelle}}</td>
                 <td>{{item.etatVente}}</td>
