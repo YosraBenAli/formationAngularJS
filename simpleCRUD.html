@@ -21,6 +21,17 @@
     <div class="container" style="padding-top: 60px; padding-bottom: 60px">
         <div ng-controller="myController">
             <h1>Simple CRUD Operations</h1>
+            <br>
+            <div class="form-group pull-right">
+                <label>Sort the customers &nbsp;</label>
+                <select ng-model="sortOrder">
+                    <option value="+id">By their id</option>
+                    <option value="+firstName">By their first name</option>
+                    <option value="-lastName">By their last name (descendant)</option>
+                    <option value="+adress">By their adress</option>
+                    <option value="-phone">By their phone number (descendant)</option>
+                </select>
+            </div>
             <!-- Affichage des 3 éléments initialisés dans l'objet $scope -->
             <table class="table table-striped table-responsive">
                 <thead>
@@ -34,25 +45,25 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="x in customers">
+                <tr ng-repeat="x in customers | orderBy:sortOrder">
                     <td>{{x.id}}</td>
                     <td>{{x.firstName}}</td>
-                    <td>{{x.lastName}}</td>
+                    <td>{{x.lastName | uppercase}}</td>
                     <td>{{x.adress}}</td>
                     <td>{{x.phone}}</td>
                     <!-- Cette colonne contient l'ensemble des opérations pour chaque élément -->
                     <td>
                         <div class="dropdown">
-                        <button data-toggle="dropdown" class="dropdown-toggle btn btn-primary">Operations <span class="caret"></span></button>
-                        <ul class="dropdown-menu">
-                            <!-- Le clic sur le lien Update appelle la fonction selectCustomer() (non pas la fonction updateCustomer()) qui récupère les données de l'élément correspondant
-                             et les relie aux inputs se trouvant dans le modal #myModal -->
-                            <li><a href="#myModal" ng-click="selectCustomer(x)" data-toggle="modal">Update<span class="fa fa-refresh pull-right"></span></a></li>
-                            <li class="divider"></li>
-                            <!-- Appel à la fonction deleteCustomer pour l'élément x -->
-                            <li><a ng-click="deleteCustomer(x)">Delete<span class="fa fa-trash pull-right"></span></a></li>
-                        </ul>
-                    </div>
+                            <button data-toggle="dropdown" class="dropdown-toggle btn btn-primary">Options <span class="caret"></span></button>
+                            <ul class="dropdown-menu">
+                                <!-- Le clic sur le lien Update appelle la fonction selectCustomer() (non pas la fonction updateCustomer()) qui récupère les données de l'élément correspondant
+                                et les relie aux inputs se trouvant dans le modal #myModal -->
+                                <li><a href="#myModal" ng-click="selectCustomer(x)" data-toggle="modal">Update<span class="fa fa-refresh fa-spin pull-right"></span></a></li>
+                                <li class="divider"></li>
+                                <!-- Appel à la fonction deleteCustomer pour l'élément x -->
+                                <li><a ng-click="deleteCustomer(x)">Delete<span class="fa fa-trash pull-right"></span></a></li>
+                            </ul>
+                        </div>
                     </td>
                 </tr>
                 </tbody>
@@ -100,7 +111,7 @@
                         </div>
                     </div>
                 </form>
-            </div> <!-- #form1 -->
+            </div> <!-- //#form1 -->
 
             <!-- Modal affichant les données qui vont être mises à jour. Ce modal sera affiché lorsqu'on clique sur Update -->
             <div id="myModal" class="modal fade">
@@ -152,7 +163,7 @@
                         </div>
                     </div>
                 </div>
-            </div><!-- #myModal -->
+            </div><!-- //#myModal -->
         </div><!-- //ng-controller -->
     </div><!-- //container -->
 
@@ -162,10 +173,13 @@
         app.controller('myController',function($scope){
             // Afficher tableau customers
             $scope.customers = [
-                { id : '1', firstName : 'John', lastName : 'Doe', adress : 'New York', phone : '8758-4777-44'},
-                { id : '2', firstName : 'Mary', lastName : 'Peterson', adress : 'Florida', phone : '8788-4787-22'},
-                { id : '3', firstName : 'Peter', lastName : 'Parker', adress : 'Michigan', phone : '8758-4778-33'}
+                { id : 1, firstName : 'John', lastName : 'Doe', adress : 'New York', phone : '8758-4777-44'},
+                { id : 2, firstName : 'Mary', lastName : 'Peterson', adress : 'Florida', phone : '8788-4787-22'},
+                { id : 3, firstName : 'Peter', lastName : 'Parker', adress : 'Michigan', phone : '8758-4778-33'}
             ];
+
+            // Faire le tri du tableau customers par id ascendant
+            $scope.sortOrder = '+id';
 
             // Ajouter un nouveau élément au tableau customers
             $scope.addCustomer = function() {
@@ -177,6 +191,7 @@
                     phone: $scope.customers.phone
                 };
                 $scope.customers.push(newCustomer);
+                console.log($scope.customers);
 
                 // Initialiser l'objet $scope après l'ajout. (Utile en cas d'ajout de plusieurs éléments successivement)
                 $scope.clearCache();
