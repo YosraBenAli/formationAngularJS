@@ -9,10 +9,11 @@
 
     <!-- AngularJS -->
     <script src="assets/js/angular.min.js"></script>
-    <script src="assets/js/lodash.min.js"></script>
-    <!-- BootstrapCSS -->
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
 
+    <script src="assets/js/lodash.min.js"></script>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <!-- showErrors -->
     <script src="assets/js/ui-bootstrap-tpls-2.5.0.min.js"></script>
     <script src="assets/js/showErrors.min.js"></script>
 
@@ -23,22 +24,21 @@
     <div class="row">
         <div class="col-sm-offset-9 col-sm-3">
             <div class="input-group">
-                <input type="text" class="form-control" ng-model="search" placeholder="Search...">
+                <input type="text" class="form-control" ng-model="search" placeholder="Search&hellip;">
                 <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
             </div>
-
         </div>
     </div>
     <br>
     <table class="table table-striped table-responsive">
         <thead>
-            <tr>
-                <th><a href="" ng-click="champ = 'id'; inverse=!inverse">ID</a></th>
-                <th><a href="" ng-click="champ = 'firstName'; inverse=!inverse">First Name</a></th>
-                <th><a href="" ng-click="champ = 'lastName'; inverse=!inverse">Last Name</a></th>
-                <th><a href="" ng-click="champ = 'Age'; inverse=!inverse">Age</a></th>
-                <th>Options</th>
-            </tr>
+        <tr>
+            <th><a href="" ng-click="champ = 'id'; inverse=!inverse">ID</a></th>
+            <th><a href="" ng-click="champ = 'firstName'; inverse=!inverse">First Name</a></th>
+            <th><a href="" ng-click="champ = 'lastName'; inverse=!inverse">Last Name</a></th>
+            <th><a href="" ng-click="champ = 'Age'; inverse=!inverse">Age</a></th>
+            <th>Options</th>
+        </tr>
         </thead>
         <tbody>
         <tr ng-repeat="student in students | orderBy:champ:inverse | filter:search">
@@ -65,28 +65,32 @@
                 <div class="form-group row" show-errors>
                     <label class="col-sm-3">First Name</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" ng-model="student.firstName" name="fname" placeholder="Please enter the student's first name" required>
+                        <input type="text" class="form-control" ng-model="student.firstName" name="fname"
+                               placeholder="Please enter the student's first name" required>
                         <p class="help-block"
-                           ng-show="(form1.fname.$touched || form1.$submitted) && form1.fname.$error.required">Champ
-                            requis</p>
+                           ng-show="(form1.fname.$touched || form1.$submitted) && form1.fname.$error.required">Required
+                            field
+                        </p>
                     </div>
                 </div>
                 <div class="form-group row" show-errors>
                     <label class="col-sm-3">Last Name</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" ng-model="student.lastName" name="lname" placeholder="Please enter the student's last name" required>
+                        <input type="text" class="form-control" ng-model="student.lastName" name="lname"
+                               placeholder="Please enter the student's last name" required>
                         <p class="help-block"
                            ng-show="(form1.lname.$touched || form1.$submitted) && form1.lname.$error.required">
-                            Champ requis</p>
+                            Required field</p>
                     </div>
                 </div>
                 <div class="form-group row" show-errors>
                     <label class="col-sm-3">Age</label>
                     <div class="col-sm-9">
-                        <input type="number" class="form-control" ng-model="student.age" name="age" placeholder="Please enter the student's age" required>
+                        <input type="number" class="form-control" ng-model="student.age" name="age"
+                               placeholder="Please enter the student's age" required>
                         <p class="help-block"
                            ng-show="(form1.age.$touched || form1.$submitted) && form1.age.$error.required">
-                            Champ requis</p>
+                            Required field</p>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -95,22 +99,17 @@
                     </div>
                 </div>
             </form>
-
             <p style="color: blue; font-size:20px " align="center">{{alert}}</p>
-
         </div>
-
     </div>
 </div>
 
 <!-- jQuery -->
 <script src="assets/js/jquery-3.2.1.min.js"></script>
-
-<!-- BootstrapCSS -->
+<!-- Bootstrap JS -->
 <script src="assets/js/bootstrap.min.js"></script>
-
+<!-- appForm.js -->
 <script src="appForm.js"></script>
-
 
 </body>
 </html>

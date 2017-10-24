@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Le service $http 24/10/2017</title>
+
+    <!-- AngularJS -->
+    <script src="assets/js/angular.min.js"></script>
+
+    <script src="assets/js/lodash.min.js"></script>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <!-- showErrors -->
+    <script src="assets/js/ui-bootstrap-tpls-2.5.0.min.js"></script>
+    <script src="assets/js/showErrors.min.js"></script>
+
+</head>
+<body ng-controller="produitsController">
+
+<div class="container" style="padding-top: 60px; padding-bottom: 60px;">
+    <div class="row">
+        <div class="col-sm-offset-9 col-sm-3">
+            <div class="input-group">
+                <input type="text" class="form-control" ng-model="search" placeholder="Search&hellip;">
+                <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+            </div>
+        </div>
+    </div>
+    <table>
+        <tr>
+            <td style="padding-right: 30px;"><h2>Liste des produits</h2></td>
+            <td>
+                <button type="button" class="btn btn-success" id="button1"><span
+                        class="glyphicon glyphicon-plus-sign"></span> Ajouter un nouveau produit
+                </button>
+            </td>
+        </tr>
+    </table>
+    <br>
+
+    <div class="row">
+        <div class="col-sm-offset-3 col-sm-7">
+            <form name="form1" id="form1" class="form-horizontal" ng-submit="addProduct(form1.$valid)" hidden
+                  novalidate>
+                <div class="form-group row" show-errors>
+                    <label class="col-sm-3">Référence</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" ng-model="produit.reference" name="reference"
+                               placeholder="Veuillez entrer la référence du produit" required>
+                        <p class="help-block"
+                           ng-show="(form1.reference.$touched || form1.$submitted) && form1.reference.$error.required">
+                            Champ requis
+                        </p>
+                    </div>
+                </div>
+                <div class="form-group row" show-errors>
+                    <label class="col-sm-3">Libellé</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" ng-model="produit.libelle" name="libelle"
+                               placeholder="Veuillez entrer le libellé du produit" required>
+                        <p class="help-block"
+                           ng-show="(form1.libelle.$touched || form1.$submitted) && form1.libelle.$error.required">
+                            Champ requis</p>
+                    </div>
+                </div>
+                <div class="form-group row" show-errors>
+                    <label class="col-sm-3">Prix</label>
+                    <div class="col-sm-9">
+                        <input type="number" class="form-control" ng-model="produit.prixVent" name="prixVent"
+                               placeholder="Veuillez entrer le prix du produit" required>
+                        <p class="help-block"
+                           ng-show="(form1.prixVent.$touched || form1.$submitted) && form1.prixVent.$error.required">
+                            Champ requis</p>
+                    </div>
+                </div>
+                <div class="form-group row" show-errors>
+                    <label class="col-sm-3">Etat de vente</label>
+                    <div class="col-sm-9">
+                        <label class="radio-inline"><input type="radio" name="etatVente" value="EN_VENTE"
+                                                           ng-model="produit.etatVente" ng-required="!produit.etatVente"
+                                                           ng-checked="produit.etatVente=='EN_VENTE'"> En Vente</label>
+                        <label class="radio-inline"><input type="radio" name="etatVente" value="HORS_VENTE"
+                                                           ng-model="produit.etatVente" ng-required="!produit.etatVente"
+                                                           ng-checked="produit.etatVente=='HORS_VENTE'"> Hors
+                            Vente</label>
+                        <p class="help-block" style="color:#A94442;"
+                           ng-show="form1.$submitted && form1.etatVente.$error.required">
+                            Vous devez sélectionner une option</p>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <input type="submit" class="btn btn-success" value="Ajouter le produit">
+                    </div>
+                </div>
+            </form>
+            <p style="color: blue; font-size:20px;">{{addSuccess}}</p>
+            <p>{{data}}</p>
+            <p>{{addError}}</p>
+
+        </div>
+    </div>
+    <br>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Référence</th>
+            <th>Libellé</th>
+            <th>Prix (TND)</th>
+            <th>Etat de vente</th>
+            <th>Options</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="produit in produits | filter:search">
+            <td>{{produit.id}}</td>
+            <td>{{produit.reference | uppercase}}</td>
+            <td>{{produit.libelle | uppercase}}</td>
+            <td>{{produit.prixVent}}</td>
+            <td>{{produit.etatVente}}</td>
+            <td>
+                <a class="btn btn-primary btn-sm" href="#modalForEdit" ng-click="copyProduct($index)"
+                   data-toggle="modal"><span class="glyphicon glyphicon-pencil"></span> Modifier</a>
+                &nbsp; &nbsp;
+                <button type="button" class="btn btn-danger btn-sm" ng-click="deleteProduct(produit.id,$index)"><span
+                        class="glyphicon glyphicon-trash"></span> Supprimer
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
+<div id="modalForEdit" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- Le clic sur le bouton x appelle la fonction clearCache() qui permet d'initialiser la variable customers de l'objet $scope -->
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="produit={}">&times;</button>
+                <h4 class="modal-title">Mise à jour du produit</h4>
+            </div>
+            <div class="modal-body">
+                <form name="form2" id="form2" class="form-horizontal" ng-submit="addProduct(form2.$valid)" novalidate>
+                    <div class="form-group row" show-errors>
+                        <label class="col-sm-3">Référence</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" ng-model="produit.reference" name="reference"
+                                   placeholder="Veuillez entrer la référence du produit" required>
+                            <p class="help-block"
+                               ng-show="(form2.reference.$touched || form2.$submitted) && form2.reference.$error.required">
+                                Champ requis
+                            </p>
+                        </div>
+                    </div>
+                    <div class="form-group row" show-errors>
+                        <label class="col-sm-3">Libellé</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" ng-model="produit.libelle" name="libelle"
+                                   placeholder="Veuillez entrer le libellé du produit" required>
+                            <p class="help-block"
+                               ng-show="(form2.libelle.$touched || form2.$submitted) && form2.libelle.$error.required">
+                                Champ requis</p>
+                        </div>
+                    </div>
+                    <div class="form-group row" show-errors>
+                        <label class="col-sm-3">Prix</label>
+                        <div class="col-sm-9">
+                            <input type="number" class="form-control" ng-model="produit.prixVent" name="prixVent"
+                                   placeholder="Veuillez entrer le prix du produit" required>
+                            <p class="help-block"
+                               ng-show="(form2.prixVent.$touched || form2.$submitted) && form2.prixVent.$error.required">
+                                Champ requis</p>
+                        </div>
+                    </div>
+                    <div class="form-group row" show-errors>
+                        <label class="col-sm-3">Etat de vente</label>
+                        <div class="col-sm-9">
+                            <label class="radio-inline"><input type="radio" name="etatVente" value="EN_VENTE"
+                                                               ng-model="produit.etatVente"
+                                                               ng-required="!produit.etatVente"
+                                                               ng-checked="produit.etatVente=='EN_VENTE'"> En
+                                Vente</label>
+                            <label class="radio-inline"><input type="radio" name="etatVente" value="HORS_VENTE"
+                                                               ng-model="produit.etatVente"
+                                                               ng-required="!produit.etatVente"
+                                                               ng-checked="produit.etatVente=='HORS_VENTE'"> Hors
+                                Vente</label>
+                            <p class="help-block" style="color:#A94442;"
+                               ng-show="form2.$submitted && form2.etatVente.$error.required">
+                                Vous devez sélectionner une option</p>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-offset-3 col-sm-9">
+                            <input type="submit" class="btn btn-success" value="Modifier le produit">
+                        </div>
+                    </div>
+                </form>
+                <p style="color: blue; font-size:20px;">{{modifySuccess}}</p>
+                <p style="color: red; font-size:20px;">{{modifyError}}</p>
+            </div>
+        </div>
+    </div>
+</div><!-- //#modalForUpdate -->
+
+
+<!-- jQuery -->
+<script src="assets/js/jquery-3.2.1.min.js"></script>
+<!-- Bootstrap JS -->
+<script src="assets/js/bootstrap.min.js"></script>
+<!-- app_$http.js -->
+<script src="app_$http.js"></script>
+<!-- toggle le formulaire d'ajout -->
+<script>
+    $(document).ready(
+        function () {
+            $('#button1').click(function () {
+                $('#form1').toggle('slow');
+            });
+        });
+</script>
+
+</body>
