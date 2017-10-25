@@ -24,10 +24,11 @@ app.controller('produitsController', function ($scope, $http) {
                         // Ajouter le produit en live (sans actualiser la page)
                         $scope.produits.unshift($scope.produit);
 
-                        //$scope.form1 = {}; //ne peut pas ajouter un autre produit sans actualiser la page
+                        $scope.form1 = {}; //ne peut pas ajouter un autre produit sans actualiser la page
 
                         // Vider le formulaire après l'ajout pour qu'on puisse ajouter d'autres produits
                         $scope.produit = {};
+
                     }, (function (response) {
                             // En cas d'erreur lors de l'ajout, l'erreur s'affiche
                             $scope.addError = response.status + ' : ' + response.statusText;
@@ -38,7 +39,7 @@ app.controller('produitsController', function ($scope, $http) {
                 $http.put('http://carla.naxidia.com:8083/api/produits/', $scope.produit)
                     .then(
                         function (response) {
-                            $scope.modifySuccess = "Produit modifié.";
+                            $scope.modifySuccess = "Produit " + $scope.produit.libelle + " modifié.";
                             // Modifier le produit en live (sans actualiser la page)
                             var index = _.findIndex($scope.produits, {'id': $scope.produit.id});
                             angular.copy($scope.produit, $scope.produits[index]);
@@ -58,13 +59,13 @@ app.controller('produitsController', function ($scope, $http) {
             $http.delete('http://carla.naxidia.com:8083/api/produits/' + id)
                 .then(
                     function (response) {
-                        $scope.alert = 'Produit ' + $scope.produits[index].libelle + ' supprimé';
+                        $scope.addSuccess = 'Produit ' + $scope.produits[index].libelle + ' supprimé';
                         // Supprimer le produit en live (sans actualiser la page)
                         $scope.produits.splice(index, 1);
                     },
                     function (response) {
                         // En cas d'erreur lors de la suppression, l'erreur s'affiche
-                        $scope.error = response.status + ' : ' + response.statusText;
+                        $scope.addError = response.status + ' : ' + response.statusText;
                     }
                 );
         }

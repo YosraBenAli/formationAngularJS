@@ -1,0 +1,20 @@
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Référence</th>
+        <th>Libellé</th>
+        <th>Prix (TND)</th>
+        <th>Etat de vente</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="produit in produits">
+        <td>{{produit.id}}</td>
+        <td>{{produit.reference | uppercase}}</td>
+        <td>{{produit.libelle | uppercase}}</td>
+        <td>{{produit.prixVent}}</td>
+        <td>{{produit.etatVente}}</td>
+    </tr>
+    </tbody>
+</table>

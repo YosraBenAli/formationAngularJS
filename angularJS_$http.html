@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Le service $http 24/10/2017</title>
+    <title>CRUD with $http service 24/10/2017</title>
 
     <!-- AngularJS -->
     <script src="assets/js/angular.min.js"></script>
@@ -33,9 +33,9 @@
         <tr>
             <td style="padding-right: 30px;"><h2>Liste des produits</h2></td>
             <td>
-                <button type="button" class="btn btn-success" id="button1"><span
+                <a class="btn btn-success" ng-click="isAddFormOpen = !isAddFormOpen"><span
                         class="glyphicon glyphicon-plus-sign"></span> Ajouter un nouveau produit
-                </button>
+                </a>
             </td>
         </tr>
     </table>
@@ -43,60 +43,62 @@
 
     <div class="row">
         <div class="col-sm-offset-3 col-sm-7">
-            <form name="form1" id="form1" class="form-horizontal" ng-submit="addProduct(form1.$valid)" hidden
-                  novalidate>
-                <div class="form-group row" show-errors>
-                    <label class="col-sm-3">Référence</label>
-                    <div class="col-sm-9">
-                        <input type="text" class="form-control" ng-model="produit.reference" name="reference"
-                               placeholder="Veuillez entrer la référence du produit" required>
-                        <p class="help-block"
-                           ng-show="(form1.reference.$touched || form1.$submitted) && form1.reference.$error.required">
-                            Champ requis
-                        </p>
+            <div ng-show="isAddFormOpen">
+                <form name="form1" id="form1" class="form-horizontal" ng-submit="addProduct(form1.$valid)" novalidate>
+                    <div class="form-group row" show-errors>
+                        <label class="col-sm-3">Référence</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" ng-model="produit.reference" name="reference"
+                                   placeholder="Veuillez entrer la référence du produit" required>
+                            <p class="help-block"
+                               ng-show="(form1.reference.$touched || form1.$submitted) && form1.reference.$error.required">
+                                Champ requis
+                            </p>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group row" show-errors>
-                    <label class="col-sm-3">Libellé</label>
-                    <div class="col-sm-9">
-                        <input type="text" class="form-control" ng-model="produit.libelle" name="libelle"
-                               placeholder="Veuillez entrer le libellé du produit" required>
-                        <p class="help-block"
-                           ng-show="(form1.libelle.$touched || form1.$submitted) && form1.libelle.$error.required">
-                            Champ requis</p>
+                    <div class="form-group row" show-errors>
+                        <label class="col-sm-3">Libellé</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" ng-model="produit.libelle" name="libelle"
+                                   placeholder="Veuillez entrer le libellé du produit" required>
+                            <p class="help-block"
+                               ng-show="(form1.libelle.$touched || form1.$submitted) && form1.libelle.$error.required">
+                                Champ requis</p>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group row" show-errors>
-                    <label class="col-sm-3">Prix</label>
-                    <div class="col-sm-9">
-                        <input type="number" class="form-control" ng-model="produit.prixVent" name="prixVent"
-                               placeholder="Veuillez entrer le prix du produit" required>
-                        <p class="help-block"
-                           ng-show="(form1.prixVent.$touched || form1.$submitted) && form1.prixVent.$error.required">
-                            Champ requis</p>
+                    <div class="form-group row" show-errors>
+                        <label class="col-sm-3">Prix</label>
+                        <div class="col-sm-9">
+                            <input type="number" class="form-control" ng-model="produit.prixVent" name="prixVent"
+                                   placeholder="Veuillez entrer le prix du produit" required>
+                            <p class="help-block"
+                               ng-show="(form1.prixVent.$touched || form1.$submitted) && form1.prixVent.$error.required">
+                                Champ requis</p>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group row" show-errors>
-                    <label class="col-sm-3">Etat de vente</label>
-                    <div class="col-sm-9">
-                        <label class="radio-inline"><input type="radio" name="etatVente" value="EN_VENTE"
-                                                           ng-model="produit.etatVente" ng-required="!produit.etatVente"
-                                                           ng-checked="produit.etatVente=='EN_VENTE'"> En Vente</label>
-                        <label class="radio-inline"><input type="radio" name="etatVente" value="HORS_VENTE"
-                                                           ng-model="produit.etatVente" ng-required="!produit.etatVente"
-                                                           ng-checked="produit.etatVente=='HORS_VENTE'"> Hors
-                            Vente</label>
-                        <p class="help-block" style="color:#A94442;"
-                           ng-show="form1.$submitted && form1.etatVente.$error.required">
-                            Vous devez sélectionner une option</p>
+                    <div class="form-group row" show-errors>
+                        <label class="col-sm-3">Etat de vente</label>
+                        <div class="col-sm-9">
+                            <label class="radio-inline"><input type="radio" name="etatVente" value="EN_VENTE"
+                                                               ng-model="produit.etatVente" ng-required="!produit.etatVente"
+                                                               ng-checked="produit.etatVente=='EN_VENTE'"> En Vente</label>
+                            <label class="radio-inline"><input type="radio" name="etatVente" value="HORS_VENTE"
+                                                               ng-model="produit.etatVente" ng-required="!produit.etatVente"
+                                                               ng-checked="produit.etatVente=='HORS_VENTE'"> Hors
+                                Vente</label>
+                            <p class="help-block" style="color:#A94442;"
+                               ng-show="form1.$submitted && form1.etatVente.$error.required">
+                                Vous devez sélectionner une option</p>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-sm-offset-3 col-sm-9">
-                        <input type="submit" class="btn btn-success" value="Ajouter le produit">
+                    <div class="form-group row">
+                        <div class="col-sm-offset-3 col-sm-9">
+                            <input type="submit" class="btn btn-success" value="Ajouter le produit">
+                        </div>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
+
             <p style="color: blue; font-size:20px;">{{addSuccess}}</p>
             <p>{{data}}</p>
             <p>{{addError}}</p>
@@ -216,14 +218,17 @@
 <script src="assets/js/bootstrap.min.js"></script>
 <!-- app_$http.js -->
 <script src="app_$http.js"></script>
-<!-- toggle le formulaire d'ajout -->
-<script>
-    $(document).ready(
-        function () {
-            $('#button1').click(function () {
-                $('#form1').toggle('slow');
-            });
-        });
-</script>
+
+
+<!-- toggle le formulaire d'ajout //-->
+<!--<script>-->
+    <!--$(document).ready(-->
+        <!--function () {-->
+            <!--$('#button1').click(function () {-->
+                <!--$('#form1').toggle('slow');-->
+            <!--});-->
+        <!--});-->
+<!--</script>-->
 
 </body>
+</html>
