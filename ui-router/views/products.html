@@ -1,20 +1,39 @@
-<table class="table table-striped">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Référence</th>
-        <th>Libellé</th>
-        <th>Prix (TND)</th>
-        <th>Etat de vente</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr ng-repeat="produit in produits">
-        <td>{{produit.id}}</td>
-        <td>{{produit.reference | uppercase}}</td>
-        <td>{{produit.libelle | uppercase}}</td>
-        <td>{{produit.prixVent}}</td>
-        <td>{{produit.etatVente}}</td>
-    </tr>
-    </tbody>
-</table>
+<style>
+    .md-toast.success {
+        background-color: green;
+    }
+</style>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Référence</th>
+            <th>Libellé</th>
+            <th>Prix (TND)</th>
+            <th>Etat de vente</th>
+            <th>Options</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="produit in produits">
+            <td>{{produit.id}}</td>
+            <td>{{produit.reference | uppercase}}</td>
+            <td>{{produit.libelle | uppercase}}</td>
+            <td>{{produit.prixVent}}</td>
+            <td>{{produit.etatVente}}</td>
+            <td>
+                <button class="btn btn-danger btn-sm" ng-click="deleteProduct(produit.id,$index)"><span
+                        class="glyphicon glyphicon-remove"></span> Effacer
+                </button>
+                <button class="btn btn-primary btn-sm" ng-click=""><span
+                        class="glyphicon glyphicon-pencil"></span> Modifier
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
