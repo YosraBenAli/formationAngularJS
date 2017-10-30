@@ -1,84 +1,278 @@
-var myApp = angular.module('helloworld', ['ui.router', 'ngMaterial']);
+'use strict';
 
-myApp.config(function ($stateProvider, $urlRouterProvider) {
+var myModuleConfig = function ($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise("/");
-
-    var homeState = {
-        name: 'home',
+    $stateProvider.state('home', {
         url: '/',
         templateUrl: 'views/home.html'
-    }
-
-    var helloState = {
-        name: 'hello',
-        url: '/helloo',
+    }).state('hello', {
+        url: '/hello',
         templateUrl: 'views/hello.html'
-    }
-
-    var aboutState = {
-        name: 'about',
-        url: '/aboutt',
+    }).state('about', {
+        url: '/about',
         templateUrl: 'views/about.html'
-    }
-
-    var contactState = {
-        name: 'contact',
-        url: '/contactt',
-        templateUrl: 'views/contact.html',
-    }
-
-    var productsState = {
-        name: 'products',
-        url: '/productss',
-        templateUrl: 'views/products.html',
+    }).state('contact', {
+        url: '/contact',
+        templateUrl: 'views/contact.html'
+    }).state('products', {
+        url: '/products',
+        templateUrl: 'views/products/productsIndex.html',
         controller: 'productsController'
-    }
+    }).state('products.products-add', {
+        url: '/add',
+        templateUrl: 'views/products/productsAdd.html',
+        controller: 'productsAddController'
+    }).state('products.products-edit', {
+        url: '/edit/:id',
+        templateUrl: 'views/products/productsEdit.html',
+        controller: 'productsEditController'
+    });
+};
+myModuleConfig.$inject = ["$stateProvider", "$urlRouterProvider"];
 
-    $stateProvider.state(homeState);
-    $stateProvider.state(helloState);
-    $stateProvider.state(aboutState);
-    $stateProvider.state(contactState);
-    $stateProvider.state(productsState);
 
-});
+// Les contrôleurs
 
-myApp.controller('routerCtrl', function ($scope, $state) {
+var routerCtrl = function ($scope, $state) {
     $scope.redirect = function () {
         $state.go('contact');
     }
-});
+};
+routerCtrl.$inject = ["$scope", "$state"];
 
-myApp.controller('productsController', function ($scope, $http, $state, $mdToast) {
+var productsController = function ($scope, $state, $http, $mdToast) {
     // Afficher la liste des produits
     $http.get('http://carla.naxidia.com:8083/api/produits')
         .then(function (response) {
             $scope.produits = response.data;
         }, function (response) {
-            $scope.produits = response.statusText;
+            $scope.produits = response.status + ' : ' + response.statusText;
         });
 
     // Supprimer un produit
     $scope.deleteProduct = function (id, index) {
-        if (confirm('Ëtes-vous sûr de vouloir supprimer ' + $scope.produits[index].libelle + '?')) {
-
+        if (confirm('Ëtes-vous sûr de vouloir supprimer ' + $scope.produits[index].libelle + ' ?')) {
             $http.delete('http://carla.naxidia.com:8083/api/produits/' + id)
                 .then(
                     function (response) {
-                        console.log('Success');
                         $state.go('products', {}, {reload: true});
+                        console.log('Success');
 
                         // Afficher une notification avec mdToast
                         $mdToast.show(
                             $mdToast.simple()
                                 .textContent('Produit ' + $scope.produits[index].libelle + ' supprimé !')
-                                .position('top right')
-                                .hideDelay(7000)
+                                .position('bottom right')
+                                .hideDelay(6000)
                         );
                     },
                     function (response) {
-                        console.log('Error');
+                        console.log(response.status + ' : ' + response.statusText);
                     }
                 );
         }
     }
-});
+};
+productsController.$inject = ["$scope", "$state", "$http", "$mdToast"];
+
+var productsAddController = function ($scope, $state, $http, $mdToast) {
+    // Ajouter un produit
+    $scope.addProduct = function (valid) {
+        $scope.$broadcast('show-errors-check-validity');
+        if (valid) {
+            $http.post('http://carla.naxidia.com:8083/api/produits', $scope.produit)
+                .then(function (response) {
+                    $state.go('products', {}, {reload: true});
+                    console.log(response.data);
+
+                    // Afficher une notification avec mdToast
+                    $mdToast.show(
+                        $mdToast.simple()
+                            .textContent('Produit ' + response.data.libelle + '  ajouté !')
+                            .position('bottom right')
+                            .hideDelay(6000)
+                    );
+                }, (function (response) {
+                        console.log(response.status + ' : ' + response.statusText);
+                    }
+                ))
+        }
+    }
+};
+productsAddController.$inject = ["$scope", "$state", "$http", "$mdToast"];
+
+var productsEditController = function ($scope, $state, $stateParams, $http, $mdToast) {
+    // Récupérer un produit et l'afficher dans le formulaire de modification
+    $scope.produit = {};
+    $http.get('http://carla.naxidia.com:8083/api/produits/' + $stateParams.id)
+        .then(function (response) {
+            angular.copy(response.data, $scope.produit);
+        }, function (response) {
+            console.log(response.status + ' : ' + response.statusText);
+        });
+    // Modifier un produit
+    $scope.editProduct = function (valid) {
+        $scope.$broadcast('show-errors-check-validity');
+        if (valid) {
+            $http.put('http://carla.naxidia.com:8083/api/produits/', $scope.produit)
+                .then(
+                    function (response) {
+                        $state.go('products', {}, {reload: true});
+                        console.log(response.data);
+
+                        // Afficher une notification avec mdToast
+                        $mdToast.show(
+                            $mdToast.simple()
+                                .textContent('Produit ' + response.data.libelle + '  modifié !')
+                                .position('bottom right')
+                                .hideDelay(6000)
+                        );
+                    },
+                    function (response) {
+                        console.log(response.status + ' : ' + response.statusText);
+                    }
+                );
+        }
+    }
+};
+productsEditController.$inject = ["$scope", "$state", "$stateParams", "$http", "$mdToast"];
+
+// Init module
+angular.module("myApp", ['ui.router', 'ngMaterial', 'ui.bootstrap.showErrors'])
+    .config(myModuleConfig)
+    .controller("routerCtrl", routerCtrl)
+    .controller("productsController", productsController)
+    .controller("productsAddController", productsAddController)
+    .controller("productsEditController", productsEditController);
+
+
+// Première syntaxe
+
+// var myApp = angular.module('myApp', ['ui.router', 'ngMaterial', 'ui.bootstrap.showErrors']).config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
+//     $urlRouterProvider.otherwise("/");
+//     $stateProvider.state('home', {
+//         url: '/',
+//         templateUrl: 'views/home.html'
+//     }).state('hello', {
+//         url: '/hello',
+//         templateUrl: 'views/hello.html'
+//     }).state('about', {
+//         url: '/about',
+//         templateUrl: 'views/about.html'
+//     }).state('contact', {
+//         url: '/contact',
+//         templateUrl: 'views/contact.html'
+//     }).state('products', {
+//         url: '/products',
+//         templateUrl: 'views/products/productsIndex.html',
+//         controller: 'productsController'
+//     }).state('products.products-add', {
+//         url: '/add',
+//         templateUrl: 'views/products/productsAdd.html',
+//         controller: 'productsAddController'
+//     }).state('products.products-edit', {
+//         url: '/edit/:id',
+//         templateUrl: 'views/products/productsEdit.html',
+//         controller: 'productsEditController'
+//     });
+// }]);
+//
+// myApp.controller('routerCtrl', function ($scope, $state) {
+//     $scope.redirect = function () {
+//         $state.go('contact');
+//     }
+// });
+//
+// myApp.controller('productsController', function ($scope, $http, $state, $mdToast) {
+//     // Afficher la liste des produits
+//     $http.get('http://carla.naxidia.com:8083/api/produits')
+//         .then(function (response) {
+//             $scope.produits = response.data;
+//         }, function (response) {
+//             $scope.produits = response.status + ' : ' + response.statusText;
+//         });
+//
+//     // Supprimer un produit
+//     $scope.deleteProduct = function (id, index) {
+//         if (confirm('Ëtes-vous sûr de vouloir supprimer ' + $scope.produits[index].libelle + ' ?')) {
+//             $http.delete('http://carla.naxidia.com:8083/api/produits/' + id)
+//                 .then(
+//                     function (response) {
+//                         $state.go('products', {}, {reload: true});
+//                         console.log('Success');
+//
+//                         // Afficher une notification avec mdToast
+//                         $mdToast.show(
+//                             $mdToast.simple()
+//                                 .textContent('Produit ' + $scope.produits[index].libelle + ' supprimé !')
+//                                 .position('bottom right')
+//                                 .hideDelay(6000)
+//                         );
+//                     },
+//                     function (response) {
+//                         console.log(response.status + ' : ' + response.statusText);
+//                     }
+//                 );
+//         }
+//     }
+// });
+//
+// myApp.controller('productsAddController', function ($scope, $http, $state, $mdToast) {
+//     // Ajouter un produit
+//     $scope.addProduct = function (valid) {
+//         $scope.$broadcast('show-errors-check-validity');
+//         if (valid) {
+//             $http.post('http://carla.naxidia.com:8083/api/produits', $scope.produit)
+//                 .then(function (response) {
+//                     $state.go('products', {}, {reload: true});
+//                     console.log(response.data);
+//
+//                     // Afficher une notification avec mdToast
+//                     $mdToast.show(
+//                         $mdToast.simple()
+//                             .textContent('Produit ' + response.data.libelle + '  ajouté !')
+//                             .position('bottom right')
+//                             .hideDelay(6000)
+//                     );
+//                 }, (function (response) {
+//                         console.log(response.status + ' : ' + response.statusText);
+//                     }
+//                 ))
+//         }
+//     }
+// });
+//
+// myApp.controller('productsEditController', function ($scope, $http, $state, $stateParams, $mdToast) {
+//     // Récupérer un produit et l'afficher dans le formulaire de modification
+//     $scope.produit = {};
+//     $http.get('http://carla.naxidia.com:8083/api/produits/' + $stateParams.id)
+//         .then(function (response) {
+//             angular.copy(response.data, $scope.produit);
+//         }, function (response) {
+//             console.log(response.status + ' : ' + response.statusText);
+//         });
+//     // Modifier un produit
+//     $scope.editProduct = function (valid) {
+//         $scope.$broadcast('show-errors-check-validity');
+//         if (valid) {
+//             $http.put('http://carla.naxidia.com:8083/api/produits/', $scope.produit)
+//                 .then(
+//                     function (response) {
+//                         $state.go('products', {}, {reload: true});
+//                         console.log(response.data);
+//
+//                         // Afficher une notification avec mdToast
+//                         $mdToast.show(
+//                             $mdToast.simple()
+//                                 .textContent('Produit ' + response.data.libelle + '  modifié !')
+//                                 .position('bottom right')
+//                                 .hideDelay(6000)
+//                         );
+//                     },
+//                     function (response) {
+//                         console.log(response.status + ' : ' + response.statusText);
+//                     }
+//                 );
+//         }
+//     }
+// });

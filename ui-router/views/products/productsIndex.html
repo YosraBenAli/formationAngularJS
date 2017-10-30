@@ -1,9 +1,20 @@
-<style>
-    .md-toast.success {
-        background-color: green;
-    }
-</style>
-
+<div ui-view="">
+    <button class="btn btn-success" ui-sref="products.products-add"><span
+            class="glyphicon glyphicon-plus"></span> Ajouter un produit
+    </button>
+</div>
+<br>
+<div class="row">
+    <div class="col-sm-4">
+        <h3>Liste des produits</h3>
+    </div>
+    <div class="col-sm-offset-5 col-sm-3">
+        <div class="input-group">
+            <input type="text" class="form-control" ng-model="search" placeholder="Search&hellip;">
+            <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+        </div>
+    </div>
+</div>
 <div class="table-responsive">
     <table class="table table-striped">
         <thead>
@@ -17,7 +28,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr ng-repeat="produit in produits">
+        <tr ng-repeat="produit in produits | filter:search">
             <td>{{produit.id}}</td>
             <td>{{produit.reference | uppercase}}</td>
             <td>{{produit.libelle | uppercase}}</td>
@@ -26,14 +37,13 @@
             <td>
                 <button class="btn btn-danger btn-sm" ng-click="deleteProduct(produit.id,$index)"><span
                         class="glyphicon glyphicon-remove"></span> Effacer
-                </button>
-                <button class="btn btn-primary btn-sm" ng-click=""><span
+                </button>&nbsp;
+                <button class="btn btn-warning btn-sm" ui-sref="products.products-edit({id : produit.id})"><span
                         class="glyphicon glyphicon-pencil"></span> Modifier
                 </button>
             </td>
         </tr>
         </tbody>
     </table>
-
 </div>
 

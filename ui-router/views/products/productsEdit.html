@@ -1,0 +1,58 @@
+<div class="row">
+    <div class="col-sm-offset-2 col-sm-8">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Modifier le produit <b>{{produit.libelle}}</b>
+            </div>
+            <div class="panel-body" style="margin: 0 15px;">
+                <form name="form1" id="form1" ng-submit="editProduct(form1.$valid)" novalidate>
+                    <div class="form-group row">
+                        <label>ID</label>
+                        <input type="text" disabled class="form-control" ng-model="produit.id" name="id">
+                    </div>
+                    <div class="form-group row" show-errors>
+                        <label>Référence</label>
+                        <input type="text" class="form-control" ng-model="produit.reference" name="reference"
+                               placeholder="Veuillez entrer la référence du produit" required>
+                        <p class="help-block"
+                           ng-show="(form1.reference.$touched || form1.$submitted) && form1.reference.$error.required">
+                            Champ requis.
+                        </p>
+                    </div>
+                    <div class="form-group row" show-errors>
+                        <label>Libellé</label>
+                        <input type="text" class="form-control" ng-model="produit.libelle" name="libelle"
+                               placeholder="Veuillez entrer le libellé du produit" required>
+                        <p class="help-block"
+                           ng-show="(form1.libelle.$touched || form1.$submitted) && form1.libelle.$error.required">
+                            Champ requis.</p>
+                    </div>
+                    <div class="form-group row" show-errors>
+                        <label>Prix</label>
+                        <input type="number" class="form-control" ng-model="produit.prixVent" name="prixVent"
+                               placeholder="Veuillez entrer le prix du produit" required>
+                        <p class="help-block"
+                           ng-show="(form1.prixVent.$touched || form1.$submitted) && form1.prixVent.$error.required">
+                            Champ requis.</p>
+                    </div>
+                    <div class="form-group row" show-errors>
+                        <label>Etat de vente</label>&nbsp; &nbsp;
+                        <label class="radio-inline"><input type="radio" name="etatVente" value="EN_VENTE"
+                                                           ng-model="produit.etatVente" ng-required="!produit.etatVente"
+                                                           ng-checked="produit.etatVente=='EN_VENTE'"> En Vente</label>
+                        <label class="radio-inline"><input type="radio" name="etatVente" value="HORS_VENTE"
+                                                           ng-model="produit.etatVente" ng-required="!produit.etatVente"
+                                                           ng-checked="produit.etatVente=='HORS_VENTE'"> Hors
+                            Vente</label>
+                        <p class="help-block" style="color:#A94442;"
+                           ng-show="form1.$submitted && form1.etatVente.$error.required">
+                            Vous devez sélectionner une option.</p>
+                    </div>
+                    <div class="form-group row" show-errors>
+                        <input type="submit" class="btn btn-primary" value="Modifier">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
