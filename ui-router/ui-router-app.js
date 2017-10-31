@@ -30,6 +30,39 @@ var myModuleConfig = function ($stateProvider, $urlRouterProvider) {
 };
 myModuleConfig.$inject = ["$stateProvider", "$urlRouterProvider"];
 
+// service $http
+
+var productsService = function ($http) {
+    return ({
+        getAllProduits: getAllProduits,
+        addProduit: addProduit,
+        deleteProduit: deleteProduit,
+        getProduitById: getProduitById,
+        updateProduit: updateProduit
+    });
+
+    function getAllProduits() {
+        return $http.get("http://carla.naxidia.com:8083/api/produits");
+    }
+
+    function addProduit(produit) {
+        return $http.post("http://carla.naxidia.com:8083/api/produits", produit);
+    }
+
+    function deleteProduit(id) {
+        return $http.delete("http://carla.naxidia.com:8083/api/produits/" + id);
+    }
+
+    function getProduitById(id) {
+        return $http.get("http://carla.naxidia.com:8083/api/produits/" + id);
+    }
+
+    function updateProduit(produit) {
+        return $http.put("http://carla.naxidia.com:8083/api/produits/", produit);
+    }
+};
+productsService.$inject = ["$http"];
+
 
 // Les contrôleurs
 
@@ -40,9 +73,9 @@ var routerCtrl = function ($scope, $state) {
 };
 routerCtrl.$inject = ["$scope", "$state"];
 
-var productsController = function ($scope, $state, $http, $mdToast) {
+var productsController = function (productsService, $scope, $state, $mdToast) {
     // Afficher la liste des produits
-    $http.get('http://carla.naxidia.com:8083/api/produits')
+    productsService.getAllProduits()
         .then(function (response) {
             $scope.produits = response.data;
         }, function (response) {
@@ -52,7 +85,7 @@ var productsController = function ($scope, $state, $http, $mdToast) {
     // Supprimer un produit
     $scope.deleteProduct = function (id, index) {
         if (confirm('Ëtes-vous sûr de vouloir supprimer ' + $scope.produits[index].libelle + ' ?')) {
-            $http.delete('http://carla.naxidia.com:8083/api/produits/' + id)
+            productsService.deleteProduit(id)
                 .then(
                     function (response) {
                         $state.go('products', {}, {reload: true});
@@ -73,14 +106,14 @@ var productsController = function ($scope, $state, $http, $mdToast) {
         }
     }
 };
-productsController.$inject = ["$scope", "$state", "$http", "$mdToast"];
+productsController.$inject = ["productsService", "$scope", "$state", "$mdToast"];
 
-var productsAddController = function ($scope, $state, $http, $mdToast) {
+var productsAddController = function (productsService, $scope, $state, $mdToast) {
     // Ajouter un produit
     $scope.addProduct = function (valid) {
         $scope.$broadcast('show-errors-check-validity');
         if (valid) {
-            $http.post('http://carla.naxidia.com:8083/api/produits', $scope.produit)
+            productsService.addProduit($scope.produit)
                 .then(function (response) {
                     $state.go('products', {}, {reload: true});
                     console.log(response.data);
@@ -99,12 +132,12 @@ var productsAddController = function ($scope, $state, $http, $mdToast) {
         }
     }
 };
-productsAddController.$inject = ["$scope", "$state", "$http", "$mdToast"];
+productsAddController.$inject = ["productsService", "$scope", "$state", "$mdToast"];
 
-var productsEditController = function ($scope, $state, $stateParams, $http, $mdToast) {
+var productsEditController = function (productsService, $scope, $state, $stateParams, $mdToast) {
     // Récupérer un produit et l'afficher dans le formulaire de modification
     $scope.produit = {};
-    $http.get('http://carla.naxidia.com:8083/api/produits/' + $stateParams.id)
+    productsService.getProduitById($stateParams.id)
         .then(function (response) {
             angular.copy(response.data, $scope.produit);
         }, function (response) {
@@ -114,7 +147,7 @@ var productsEditController = function ($scope, $state, $stateParams, $http, $mdT
     $scope.editProduct = function (valid) {
         $scope.$broadcast('show-errors-check-validity');
         if (valid) {
-            $http.put('http://carla.naxidia.com:8083/api/produits/', $scope.produit)
+            productsService.updateProduit($scope.produit)
                 .then(
                     function (response) {
                         $state.go('products', {}, {reload: true});
@@ -135,11 +168,12 @@ var productsEditController = function ($scope, $state, $stateParams, $http, $mdT
         }
     }
 };
-productsEditController.$inject = ["$scope", "$state", "$stateParams", "$http", "$mdToast"];
+productsEditController.$inject = ["productsService", "$scope", "$state", "$stateParams", "$mdToast"];
 
-// Init module
+// Initialisation du module
 angular.module("myApp", ['ui.router', 'ngMaterial', 'ui.bootstrap.showErrors'])
     .config(myModuleConfig)
+    .factory("productsService", productsService)
     .controller("routerCtrl", routerCtrl)
     .controller("productsController", productsController)
     .controller("productsAddController", productsAddController)
